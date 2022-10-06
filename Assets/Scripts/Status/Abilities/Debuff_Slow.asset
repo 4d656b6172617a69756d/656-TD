@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 213975e4042704147b51e6b33a4020d9, type: 3}
+  m_Name: Debuff_Slow
+  m_EditorClassIdentifier: 
+  Name: Debuff_Slow
+  DOTAmount: 0
+  TickSpeed: 0
+  MovementPenalty: 25
+  Lifetime: 3
