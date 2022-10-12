@@ -12,12 +12,20 @@ public class Player_SPAbilities : MonoBehaviour
 
     public float Slow_Cooldown;
     public float slowCD;
+
+    public float PowerUp_Cooldown;
+    public float poweupCD;
+
+    public float Income_Cooldown;
+    public float incomeCD;
    
 
     void Update()
     {
         slamCD -= Time.deltaTime;
         slowCD -= Time.deltaTime;
+        poweupCD -= Time.deltaTime;
+        incomeCD -= Time.deltaTime;
     }
     public void Ability_Slam(int amount) // deals damage to all enemies
     {
@@ -64,12 +72,14 @@ public class Player_SPAbilities : MonoBehaviour
         
     }
 
-    public void Ability_PowerUp() // adds damage to the tower
+    public void Ability_PowerUp() // adds damage to all towers for 10 seconds
     {
-        
         GameObject[] AllTowers = GameObject.FindGameObjectsWithTag("Tower");
-
-        foreach (GameObject tower in AllTowers)
+        if (AllTowers.Length == 0)
+        {
+            Debug.Log("Powerup Failed!");
+        }
+        else foreach (GameObject tower in AllTowers)
         {
             Debug.Log(tower.GetComponent<Bullet_Interaction>().damage);
             tower.GetComponent<Bullet_Interaction>().damage += 50;

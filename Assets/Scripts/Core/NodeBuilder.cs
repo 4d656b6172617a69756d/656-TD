@@ -52,9 +52,8 @@ public class NodeBuilder : MonoBehaviour
                 return;
             }
             tower = Instantiate(turretToBuild, transform.position, transform.rotation);
-            BuildMode = false;
         }
-        
+        BuildMode = false;
     }
 
     private void OnMouseEnter()

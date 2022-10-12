@@ -7,7 +7,7 @@ public class Bullet_Interaction : MonoBehaviour
     public GameObject onHit_Blood;
     private Transform target;
     public float speed = 70f;
-    public int damage = 25;
+    public int damage;
 
     [SerializeField] StatusEffectData _data;
 
@@ -24,10 +24,10 @@ public class Bullet_Interaction : MonoBehaviour
         Destroy(gameObject);
     }
 
+
     void DealDamage(Transform enemy)
     {
         Enemy_Definition e = enemy.GetComponent<Enemy_Definition>();
-
         IEffectable d = enemy.GetComponent<IEffectable>();
         if (e != null)
         {

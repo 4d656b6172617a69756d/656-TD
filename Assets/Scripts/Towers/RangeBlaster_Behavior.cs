@@ -19,7 +19,6 @@ public class RangeBlaster_Behavior : MonoBehaviour
     public float tower_cd = 0f;
 
 
-
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;

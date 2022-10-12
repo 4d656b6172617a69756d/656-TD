@@ -11,4 +11,5 @@ public class StatusEffectData : ScriptableObject
     public float TickSpeed;
     public float MovementPenalty;
     public float Lifetime;
+    public float DPSBoost;
 }
