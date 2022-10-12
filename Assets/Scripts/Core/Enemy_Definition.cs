@@ -13,6 +13,17 @@ public class Enemy_Definition : MonoBehaviour, IEffectable
 	public float currentHealth;
 	public float maxHealth = 50;
 
+	[Header("Enemy Type Bounty")]
+
+	public int diceRollRange = 5;
+	public int normalBounty = 10;
+	public int specialBounty = 25;
+	public int bossBounty = 50;
+	public int massBounty = 5;
+	public int farmBounty = 100;
+	private int totalBounty;
+	public string enemyType;
+	
 	private bool isDead = false;
 	private int wavepoint = 0;
     
@@ -69,7 +80,6 @@ public class Enemy_Definition : MonoBehaviour, IEffectable
 		{
 			Die();
 		}
-
 		currentEffectTime += Time.deltaTime;
 
 		if (currentEffectTime >= _data.Lifetime)
@@ -88,14 +98,12 @@ public class Enemy_Definition : MonoBehaviour, IEffectable
             currentHealth -= _data.DOTAmount;
 			currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 		}
-
-		
 	}
 
 	public void TakeDamage(int amount)
 	{
         currentHealth -= amount;
-		Debug.Log("Damage: " + amount + "Current Health: " + currentHealth);
+		Debug.Log("Damage: " + amount + " // Current Health: " + currentHealth);
 		if (currentHealth <= 0 && !isDead)
 		{
 			Die();
@@ -105,9 +113,41 @@ public class Enemy_Definition : MonoBehaviour, IEffectable
 	void Die()
 	{
 		isDead = true;
+
+		GetBounty();
+		Player_Currency.money += totalBounty; //Random.Range(bossBounty - diceRollRange, bossBounty + diceRollRange);
+		Debug.Log("Gold after death: " + Player_Currency.money + " // Gold received: " + totalBounty);
+
 		GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
 		Destroy(effect, 5f);
 		Destroy(gameObject);
+		
 	}
 
+	void GetBounty()
+    {
+		// "Normal", "Mass", "Boss", "Farm", "Special"
+		switch (enemyType)
+        {
+            case "Normal":
+				totalBounty = Random.Range(normalBounty - diceRollRange, normalBounty + diceRollRange);
+				break;
+
+			case "Mass":
+				totalBounty = Random.Range(massBounty - diceRollRange, massBounty + diceRollRange);
+				break;
+
+			case "Boss":
+				totalBounty = Random.Range(bossBounty - diceRollRange, bossBounty + diceRollRange);
+				break;
+
+			case "Farm":
+				totalBounty = Random.Range(farmBounty - diceRollRange, farmBounty + diceRollRange);
+				break;
+
+			case "Special":
+				totalBounty = Random.Range(specialBounty - diceRollRange, specialBounty + diceRollRange);
+				break;
+        }
+    }
 }

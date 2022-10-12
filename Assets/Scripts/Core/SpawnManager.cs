@@ -84,6 +84,7 @@ public class SpawnManager : MonoBehaviour
         for (int i = 0; i < enemiesToSpawn; i++)
         { 
             Spawn();
+            enemy.GetComponent<Enemy_Definition>().enemyType = wavesSelected[waveNumber];
             yield return new WaitForSeconds(0.5f); // cooldown @ enemy
         }
 
@@ -91,14 +92,13 @@ public class SpawnManager : MonoBehaviour
         {
             wavesSelected.Skip(waveNumber);
             waveNumber++;
-            Debug.Log("Current wave is: " + wavesSelected[waveNumber]);
+            Debug.Log("Next wave is: " + wavesSelected[waveNumber]);
         }
         else
         {
-            Debug.Log("Final wave has reached");
             Application.Quit();
-            
         }
+
         Debug.Log("Next Wave coming in: " + cooldown + " seconds");
     }
 

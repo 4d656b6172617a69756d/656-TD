@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BasicTurret_Behavior : MonoBehaviour
+public class BasicTurret_Behavior : MonoBehaviour, ITower
 {
     public float rotationSpeed = 10f;
     public float turnSpeed = 12f;
@@ -17,7 +17,9 @@ public class BasicTurret_Behavior : MonoBehaviour
     public float tower_aspd = 1f;
     public float tower_cd = 0f;
 
-    public float dps = 25;
+    public int towerDamage = 20;
+
+    //public float dps = 25;
 
     private void OnDrawGizmosSelected()
     {
@@ -29,7 +31,8 @@ public class BasicTurret_Behavior : MonoBehaviour
     {
         GameObject SpawnProjectiles = Instantiate(ProjectileType, FireSpot.position, FireSpot.rotation);
         Bullet_Interaction projectile = SpawnProjectiles.GetComponent<Bullet_Interaction>();
-
+        projectile.damage = towerDamage;
+        
         if (projectile != null)
         {
             projectile.Detection(target);
