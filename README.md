@@ -4,9 +4,10 @@ Small Tower Defense project for the sake of figuring out what Unity can and can'
 
 works: 
 - spawns: different enemy types with different scaling depending on the type of the enemy
-- abilities: slow/damage/tower powerup
+- abilities: slow/damage all enemies
 - building: two towers are available
-- camera: somewhat works
+- camera: zoom in/out/wasd + locking on
+- bounty system: depends on the enemy type
 
 todo:
 - balancing: currency, towers, scaling, income, tower levelups
