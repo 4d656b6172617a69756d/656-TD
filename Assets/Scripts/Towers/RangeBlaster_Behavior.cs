@@ -4,31 +4,32 @@ using UnityEngine;
 
 public class RangeBlaster_Behavior : MonoBehaviour
 {
-
-    public float rotationSpeed = 10f;
-    public float turnSpeed = 12f;
-    public float range = 15f;
-
     public GameObject ProjectileType;
     public Transform FireSpot;
     public Transform target;
 
     public string enemyTag = "Enemy";
 
-    public float tower_aspd = 1f;
-    public float tower_cd = 0f;
+    public float attackSpeed = 1f;
+    public float attackCooldown = 0f;
+    public float towerRange = 15f;
+    public float rotationSpeed = 10f;
+    public float turnSpeed = 12f;
+
+    public int towerDamage = 5;
 
 
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, range);
+        Gizmos.DrawWireSphere(transform.position, towerRange);
     }
 
     void Tower_Attack()
     {
         GameObject SpawnProjectiles = Instantiate(ProjectileType, FireSpot.position, FireSpot.rotation);
         Bullet_Interaction projectile = SpawnProjectiles.GetComponent<Bullet_Interaction>();
+        projectile.damage = towerDamage;
 
         if (projectile != null)
         {
@@ -53,7 +54,7 @@ public class RangeBlaster_Behavior : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        tower_cd -= Time.deltaTime;
+        attackCooldown -= Time.deltaTime;
 
         if (target == null)
         {
@@ -62,10 +63,10 @@ public class RangeBlaster_Behavior : MonoBehaviour
         else
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(target.position - transform.position), turnSpeed * Time.deltaTime);
-            if (tower_cd <= 0f) 
+            if (attackCooldown <= 0f) 
             {
                 Tower_Attack();
-                tower_cd = 1f / tower_aspd;
+                attackCooldown = 1f / attackSpeed;
             }
         }
     }
