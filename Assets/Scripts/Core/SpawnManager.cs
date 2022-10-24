@@ -60,19 +60,19 @@ public class SpawnManager : MonoBehaviour
         if (wavesSelected[waveNumber] == "Mass")
         {
             enemiesToSpawn = 12;
-            enemy.GetComponent<Enemy_Definition>().maxHealth += Mathf.Log(2, enemy.GetComponent<Enemy_Definition>().maxHealth) * 3; // bal
+            enemy.GetComponent<Enemy_Definition>().maxHealth += Mathf.Log(2, enemy.GetComponent<Enemy_Definition>().maxHealth) * 8; // bal
         }
 
         if (wavesSelected[waveNumber] == "Boss")
         {
             enemiesToSpawn = 1;
-            enemy.GetComponent<Enemy_Definition>().maxHealth += Mathf.Log(2, enemy.GetComponent<Enemy_Definition>().maxHealth) * 3; // bal
+            enemy.GetComponent<Enemy_Definition>().maxHealth += 20;
         }
 
         if (wavesSelected[waveNumber] == "Farm")
         {
             enemiesToSpawn = 6;
-            enemy.GetComponent<Enemy_Definition>().maxHealth += Mathf.Log(2, enemy.GetComponent<Enemy_Definition>().maxHealth) * 3; // bal
+            enemy.GetComponent<Enemy_Definition>().maxHealth += 1;
         }
 
         if (wavesSelected[waveNumber] == "Special")

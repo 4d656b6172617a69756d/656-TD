@@ -68,17 +68,17 @@ public class Player_SPAbilities : MonoBehaviour
 
     IEnumerator IncomeManager(int value)
     {
-        if (incomeCD >= 0 || Player_Currency.money < 100)
+        if (incomeCD >= 0 || Player_Currency.money < 50)
         {
             Debug.Log("Income Failed!");
         }
         else
         {
-            Player_Currency.money -= 100;
+            Player_Currency.money -= 50;
             incomeCD = Income_Cooldown;
 
             yield return new WaitForSeconds(5);
-            Player_Currency.money += ((Player_Currency.money * value) / 100) + 100;
+            Player_Currency.money += ((Player_Currency.money * value) / 100) + 25;
             Debug.Log("Income received, total money: " + Player_Currency.money);
         }
     }

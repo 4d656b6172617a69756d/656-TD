@@ -341,7 +341,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 758.7056, y: -25}
+  m_AnchoredPosition: {x: 758.7056, y: 414.9999}
   m_SizeDelta: {x: 332.5889, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &225894835
@@ -1416,7 +1416,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 758.7056, y: -135}
+  m_AnchoredPosition: {x: 855.6599, y: -312.96997}
   m_SizeDelta: {x: 332.5889, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &653358079
@@ -1727,7 +1727,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 5698579319842254670, guid: 64eb99670712a04458583afbd9740da9, type: 3}
-  enemySpawnerLocation: {fileID: 0}
+  enemySpawnerLocation: {fileID: 739356604}
+  textToChange_EnemyType: {fileID: 827131031}
+  textToChange_Waves: {fileID: 225894835}
+  textToChange_Money: {fileID: 653358079}
   waveCooldown: 5
   preparationTime: 10
   waveNumber: 1
@@ -2188,7 +2191,6 @@ GameObject:
   - component: {fileID: 827131030}
   - component: {fileID: 827131032}
   - component: {fileID: 827131031}
-  - component: {fileID: 827131033}
   m_Layer: 5
   m_Name: HUD_EnemyType
   m_TagString: Untagged
@@ -2213,7 +2215,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 758.7056, y: 90}
+  m_AnchoredPosition: {x: 758.7056, y: 465}
   m_SizeDelta: {x: 332.5889, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &827131031
@@ -2313,19 +2315,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 827131029}
   m_CullTransparentMesh: 1
---- !u!114 &827131033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 827131029}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1a274cfb2c356c4439dd1080a2370094, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  textToChange: {fileID: 827131031}
 --- !u!4 &832698921 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2217930865175567223, guid: 7ac5f7efedb701a44b6711eff44e6fff, type: 3}
