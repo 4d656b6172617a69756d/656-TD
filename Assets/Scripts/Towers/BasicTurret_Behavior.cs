@@ -4,27 +4,24 @@ using UnityEngine;
 
 public class BasicTurret_Behavior : MonoBehaviour, ITower
 {
-    public float rotationSpeed = 10f;
-    public float turnSpeed = 12f;
-    public float range = 15f;
-
     public GameObject ProjectileType;
     public Transform FireSpot;
     public Transform target;
 
     public string enemyTag = "Enemy";
 
-    public float tower_aspd = 1f;
-    public float tower_cd = 0f;
+    public float attackSpeed = 1f;
+    public float attackCooldown = 0f;
+    public float rotationSpeed = 10f;
+    public float turnSpeed = 12f;
+    public float towerRange = 15f;
 
     public int towerDamage = 20;
-
-    //public float dps = 25;
 
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(transform.position, range);
+        Gizmos.DrawWireSphere(transform.position, towerRange);
     }
 
     void Tower_Attack()
@@ -59,7 +56,7 @@ public class BasicTurret_Behavior : MonoBehaviour, ITower
             }
         }
 
-        if (nearestEnemy != null && shortestDistance <= range)
+        if (nearestEnemy != null && shortestDistance <= towerRange)
         {
             target = nearestEnemy.transform;
         }
@@ -71,7 +68,7 @@ public class BasicTurret_Behavior : MonoBehaviour, ITower
 
     private void FixedUpdate()
     {
-        tower_cd -= Time.deltaTime;
+        attackCooldown -= Time.deltaTime;
 
         if (target == null)
         {
@@ -80,10 +77,10 @@ public class BasicTurret_Behavior : MonoBehaviour, ITower
         else
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(target.position - transform.position), turnSpeed * Time.deltaTime);
-            if (tower_cd <= 0f)
+            if (attackCooldown <= 0f)
             {
                 Tower_Attack();
-                tower_cd = 1f / tower_aspd;
+                attackCooldown = 1f / attackSpeed;
             }
         }
     }

@@ -1,5 +1,7 @@
 # 656-TD
 
+test for the sake of testing because why not
+=======
 Small Tower Defense project for the sake of figuring out what Unity can and can't do. 
 
 works: 
@@ -10,6 +12,6 @@ works:
 - bounty system: depends on the enemy type
 
 todo:
-- balancing: currency, towers, scaling, income, tower levelups
+- balancing: scaling, tower lvlups
 - features: "catch" mechanic, pre-made mazes, maybe randomly-generated ones later
 - sound: the game's completely silent rn.
