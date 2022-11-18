@@ -9,7 +9,8 @@ public class Bullet_Interaction : MonoBehaviour
     public float speed = 70f;
     public int damage;
 
-    [SerializeField] StatusEffectData _data;
+    [SerializeField] 
+    private StatusEffectData _data;
 
     public void Detection(Transform enemy)
     {
@@ -23,7 +24,6 @@ public class Bullet_Interaction : MonoBehaviour
         DealDamage(target);
         Destroy(gameObject);
     }
-
 
     void DealDamage(Transform enemy)
     {
@@ -39,7 +39,6 @@ public class Bullet_Interaction : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (target == null)

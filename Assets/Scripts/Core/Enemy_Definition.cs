@@ -5,10 +5,9 @@ using UnityEngine.UI;
 
 public class Enemy_Definition : MonoBehaviour, IEffectable
 {
-	// public Image healthBar;
 	public GameObject deathEffect;
-	private Transform target;
 	public StatusEffectData _data;
+	private Transform target;
 
 	public float currentHealth;
 	public float maxHealth = 50;
@@ -21,9 +20,9 @@ public class Enemy_Definition : MonoBehaviour, IEffectable
 	public int bossBounty = 50;
 	public int massBounty = 5;
 	public int farmBounty = 100;
-	private int totalBounty;
 	public string enemyType;
-	
+	private int totalBounty;
+
 	private bool isDead = false;
 	private int wavepoint = 0;
     
@@ -31,10 +30,14 @@ public class Enemy_Definition : MonoBehaviour, IEffectable
 	private float currentEffectTime = 0f;
 	private float nextTickTime = 0f;
 
+	[SerializeField]
+	private Queue<string> enemyCaptured;
+
 	void Start()
 	{
 		target = Waypoint_Logic.points[0];
 		currentHealth = maxHealth;
+		enemyCaptured = new Queue<string>(10);
 	}
 
 	void Update()
@@ -49,6 +52,7 @@ public class Enemy_Definition : MonoBehaviour, IEffectable
 			if (wavepoint >= Waypoint_Logic.points.Length - 1)
 			{
 				Destroy(gameObject);
+                Player_Currency.lives--;
 				return;
 			}
 			wavepoint++;
@@ -56,6 +60,7 @@ public class Enemy_Definition : MonoBehaviour, IEffectable
 		}
 	}
 
+	// Debuffs start
 	public void Debuff_End()
 	{
 		_data = null;
@@ -99,6 +104,7 @@ public class Enemy_Definition : MonoBehaviour, IEffectable
 			currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 		}
 	}
+	// Debuffs end
 
 	public void TakeDamage(int amount)
 	{
@@ -115,14 +121,29 @@ public class Enemy_Definition : MonoBehaviour, IEffectable
 		isDead = true;
 
 		GetBounty();
-		Player_Currency.money += totalBounty; //Random.Range(bossBounty - diceRollRange, bossBounty + diceRollRange);
-		Debug.Log("Gold after death: " + Player_Currency.money + " // Gold received: " + totalBounty);
+		GetMana(target);
 
 		GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
 		Destroy(effect, 5f);
 		Destroy(gameObject);
-		
 	}
+
+	void GetMana(Transform target)
+	{
+		Player_Currency.mana += enemyCaptured.Count / 4;
+		Debug.Log("Mana after death: " + Player_Currency.mana);
+
+		if (Random.Range(0, 100) < 20)
+		{
+			enemyCaptured.Enqueue(target.name);			
+			if (enemyCaptured.Count > 10)
+			{
+				enemyCaptured.Dequeue();
+				Debug.Log("Dequeueing");
+			}
+		}
+	}
+
 
 	void GetBounty()
     {
@@ -149,5 +170,10 @@ public class Enemy_Definition : MonoBehaviour, IEffectable
 				totalBounty = Random.Range(specialBounty - diceRollRange, specialBounty + diceRollRange);
 				break;
         }
-    }
+		if (totalBounty < 0) totalBounty += diceRollRange;
+		Player_Currency.money += totalBounty;
+		Debug.Log("Gold after death: " + Player_Currency.money + " // Gold received: " + totalBounty);
+		
+	}
+
 }

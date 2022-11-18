@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+using System;
 
 public class Player_Currency : MonoBehaviour
 {
@@ -12,12 +14,11 @@ public class Player_Currency : MonoBehaviour
     public static int mana;
     public static int lives;
 
-    void Start()
+    private void Start()
     {
         money = moneyStart;
         mana = manaStart;
         lives = startLives;
     }
-
-
+    
 }

@@ -37,7 +37,7 @@ public class Player_SPAbilities : MonoBehaviour
             Debug.Log("Ability Slam is used on " + AllEnemies.Length);
             foreach (GameObject enemy in AllEnemies)
             {
-                enemy.GetComponent<Enemy_Definition>().TakeDamage(slamDamage);
+                enemy.GetComponent<Enemy_Definition>().TakeDamage(slamDamage * GetComponent<Upgrade_Logic>().upgradeTier_Spells);
                 Debug.Log("Enemy Health after Slam: " + enemy.GetComponent<Enemy_Definition>().currentHealth);
             }
         }
