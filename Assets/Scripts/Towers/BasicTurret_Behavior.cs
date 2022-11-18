@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BasicTurret_Behavior : MonoBehaviour, ITower
+public class BasicTurret_Behavior : MonoBehaviour
 {
     public GameObject ProjectileType;
     public Transform FireSpot;

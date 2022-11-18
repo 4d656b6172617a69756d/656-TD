@@ -12,6 +12,7 @@ public class SpawnManager : MonoBehaviour
     public TextMeshProUGUI textToChange_EnemyType;
     public TextMeshProUGUI textToChange_Waves;
     public TextMeshProUGUI textToChange_Money;
+    public TextMeshProUGUI textToChange_Mana;
 
     public float waveCooldown = 5f;
     public float preparationTime = 10f;
@@ -20,9 +21,9 @@ public class SpawnManager : MonoBehaviour
     public int waveNumber = 1;
     public int index;
 
-    List<string> waves = new();
-    public string[] wavesSelected = new string[250]; // player input? difficulty selection? 4th dimension insanity?
-    string[] waveTypes = { "Normal", "Mass", "Boss", "Farm", "Special" };
+    public List<string> waves = new();
+    public string[] wavesSelected = new string[250]; 
+    public string[] waveTypes = { "Normal", "Mass", "Boss", "Farm", "Special" };
 
 
     private void Start()
@@ -31,12 +32,12 @@ public class SpawnManager : MonoBehaviour
         enemy.GetComponent<Enemy_Definition>().maxHealth = 50;
     }
 
-    void Spawn()
+    private void Spawn()
     {
         Instantiate(enemy, enemySpawnerLocation.position, enemySpawnerLocation.rotation);
     }
 
-    void ShuffleWaves()
+    private void ShuffleWaves()
     {
         System.Random wavePicker = new();
 
@@ -48,7 +49,7 @@ public class SpawnManager : MonoBehaviour
         wavesSelected = waves.ToArray();
     }
 
-    void BoostEnemies()
+    private void BoostEnemies()
     {
         // "Normal", "Mass", "Boss", "Farm", "Special"
         if (wavesSelected[waveNumber] == "Normal")
@@ -109,8 +110,7 @@ public class SpawnManager : MonoBehaviour
         Debug.Log("Next Wave coming in: " + waveCooldown + " seconds");
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (preparationTime <= 0f)
         {
@@ -122,5 +122,6 @@ public class SpawnManager : MonoBehaviour
         textToChange_EnemyType.SetText("Enemy Type: " + wavesSelected[waveNumber].ToString());
         textToChange_Money.SetText("Money: " + Player_Currency.money.ToString());
         textToChange_Waves.SetText("Wave: " + waveNumber.ToString());
+        textToChange_Mana.SetText("Mana: " + Player_Currency.mana.ToString());
     }
 }

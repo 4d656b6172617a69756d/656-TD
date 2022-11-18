@@ -10,14 +10,13 @@ public class NodeBuilder : MonoBehaviour
     public Vector3 size;
     
     private GameObject turretToBuild;
-    // public GameObject getTurret;
     public GameObject BasicTurret;
     public GameObject RangeTurret;
 
     private GameObject tower;
     private Renderer map;
 
-    private bool BuildMode = false;
+    public bool BuildMode = false;
     private void Start()
     {
         map = GetComponent<Renderer>();
@@ -40,20 +39,10 @@ public class NodeBuilder : MonoBehaviour
             BuildMode = true;
         }
     }
-    // placeholder for selection + money system later
 
     private void OnMouseDown()
     {
-        if (BuildMode && turretToBuild != null)
-        {
-            if (tower != null)
-            {
-                Debug.Log("Can't build");
-                return;
-            }
-            tower = Instantiate(turretToBuild, transform.position, transform.rotation);
-        }
-        BuildMode = false;
+        BuildTower();
     }
 
     private void OnMouseEnter()
@@ -67,6 +56,20 @@ public class NodeBuilder : MonoBehaviour
     private void OnMouseExit()
     {
         map.material.color = startcol;
+    }
+
+    void BuildTower()
+    {
+        if (BuildMode && turretToBuild != null)
+        {
+            if (tower != null)
+            {
+                Debug.Log("Can't build");
+                return;
+            }
+            tower = Instantiate(turretToBuild, transform.position, transform.rotation);
+        }
+        BuildMode = false;
     }
 
 }
