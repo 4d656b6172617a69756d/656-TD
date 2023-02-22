@@ -9,6 +9,12 @@ public class Bullet_Interaction : MonoBehaviour
     public float speed = 70f;
     public int damage;
 
+    public bool multishotEnabled = false;
+    public bool berserkEnabled = false;
+
+    public float multishotRadius = 3f;
+    public float multishotDamagePercent = 0.33f;
+
     [SerializeField] 
     private StatusEffectData _data;
 
@@ -22,7 +28,34 @@ public class Bullet_Interaction : MonoBehaviour
         GameObject onHitEffect = Instantiate(onHit_Blood, transform.position, transform.rotation);
         Destroy(onHitEffect, 1f);
         DealDamage(target);
+        if (multishotEnabled)
+        {
+            ApplyMultishot();
+        }
         Destroy(gameObject);
+    }
+
+    void ApplyMultishot()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, multishotRadius);
+        foreach (Collider collider in colliders)
+        {
+            if (collider.gameObject.CompareTag("Enemy") && collider.gameObject != target.gameObject)
+            {
+                Transform enemy = collider.gameObject.transform;
+                int partialDamage = Mathf.RoundToInt(damage * multishotDamagePercent);
+                DealPartialDamage(enemy, partialDamage);
+            }
+        }
+    }
+
+    void DealPartialDamage(Transform enemy, int partialDamage)
+    {
+        Enemy_Definition e = enemy.GetComponent<Enemy_Definition>();
+        if (e != null)
+        {
+            e.TakeDamage(partialDamage);
+        }
     }
 
     void DealDamage(Transform enemy)
@@ -38,6 +71,8 @@ public class Bullet_Interaction : MonoBehaviour
             }
         }
     }
+
+
 
     void Update()
     {

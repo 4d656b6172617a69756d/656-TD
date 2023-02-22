@@ -25,11 +25,16 @@ public class SpawnManager : MonoBehaviour
     public string[] wavesSelected = new string[250]; 
     public string[] waveTypes = { "Normal", "Mass", "Boss", "Farm", "Special" };
 
+    public Enemy_Definition enemyDefinition;
+    public Player_Currency playerCurrency;
+    
 
     private void Start()
     {
         ShuffleWaves();
-        enemy.GetComponent<Enemy_Definition>().maxHealth = 50;
+        enemyDefinition = enemy.GetComponent<Enemy_Definition>();
+        enemyDefinition.maxHealth = 50;
+        playerCurrency = FindObjectOfType<Player_Currency>();
     }
 
     private void Spawn()
@@ -51,63 +56,42 @@ public class SpawnManager : MonoBehaviour
 
     private void BoostEnemies()
     {
-        // "Normal", "Mass", "Boss", "Farm", "Special"
-        if (wavesSelected[waveNumber] == "Normal")
+        Dictionary<string, (int enemiesToSpawn, float maxHealthBoost)> waveInfo = new Dictionary<string, (int, float)>
         {
-            enemiesToSpawn = 4;
-            enemy.GetComponent<Enemy_Definition>().maxHealth += Mathf.Log(7, enemy.GetComponent<Enemy_Definition>().maxHealth)/2;
-        }
+            { "Normal", (8, 0.10f) },
+            { "Mass", (20, 0.04f) },
+            { "Boss", (1, 0.25f) },
+            { "Farm", (6, 0.1f) },
+            { "Special", (3, 0.2f) }
+        };
 
-        if (wavesSelected[waveNumber] == "Mass")
+        if (waveInfo.TryGetValue(wavesSelected[waveNumber], out var info))
         {
-            enemiesToSpawn = 12;
-            enemy.GetComponent<Enemy_Definition>().maxHealth += Mathf.Log(2, enemy.GetComponent<Enemy_Definition>().maxHealth) * 8; // bal
+            enemiesToSpawn = info.enemiesToSpawn;
+            enemyDefinition.maxHealth += 5 * Mathf.Log(1 + info.maxHealthBoost * waveNumber); // 150
         }
-
-        if (wavesSelected[waveNumber] == "Boss")
-        {
-            enemiesToSpawn = 1;
-            enemy.GetComponent<Enemy_Definition>().maxHealth += 20;
-        }
-
-        if (wavesSelected[waveNumber] == "Farm")
-        {
-            enemiesToSpawn = 6;
-            enemy.GetComponent<Enemy_Definition>().maxHealth += 1;
-        }
-
-        if (wavesSelected[waveNumber] == "Special")
-        {
-            enemiesToSpawn = 3;
-            enemy.GetComponent<Enemy_Definition>().maxHealth += Mathf.Log(2, enemy.GetComponent<Enemy_Definition>().maxHealth) * 3; // bal
-        }       
     }
 
     IEnumerator SpawnWave()
     {
-        Debug.Log("Wave ¹" + waveNumber + " started");
-
+        Debug.Log($"Wave ¹{waveNumber} started");
         BoostEnemies();
 
         for (int i = 0; i < enemiesToSpawn; i++)
         { 
             Spawn();
-            enemy.GetComponent<Enemy_Definition>().enemyType = wavesSelected[waveNumber];
-            yield return new WaitForSeconds(0.5f); // waveCooldown @ enemy
+            enemyDefinition.enemyType = wavesSelected[waveNumber];
+            yield return new WaitForSeconds(0.5f);
         }
 
-        if (wavesSelected[waveNumber + 1] != null)
-        {
-            wavesSelected.Skip(waveNumber);
-            waveNumber++;
-            Debug.Log("Next wave is: " + wavesSelected[waveNumber]);
-        }
-        else
+        string[] remainingWaves = wavesSelected.Skip(waveNumber + 1).ToArray();
+        waveNumber = (remainingWaves.Length > 0) ? waveNumber + 1 : waveNumber;
+        Debug.Log($"Next wave is: {wavesSelected[waveNumber]}\nNext Wave coming in: {waveCooldown} seconds");
+
+        if (remainingWaves.Length == 0)
         {
             Application.Quit();
         }
-
-        Debug.Log("Next Wave coming in: " + waveCooldown + " seconds");
     }
 
     private void Update()
@@ -119,9 +103,9 @@ public class SpawnManager : MonoBehaviour
         }
         preparationTime -= Time.deltaTime;
 
-        textToChange_EnemyType.SetText("Enemy Type: " + wavesSelected[waveNumber].ToString());
-        textToChange_Money.SetText("Money: " + Player_Currency.money.ToString());
-        textToChange_Waves.SetText("Wave: " + waveNumber.ToString());
-        textToChange_Mana.SetText("Mana: " + Player_Currency.mana.ToString());
+        textToChange_EnemyType.SetText(string.Format("Enemy Type: {0}", wavesSelected[waveNumber]));
+        textToChange_Money.SetText(string.Format("Money: {0}", Player_Currency.money));
+        textToChange_Waves.SetText(string.Format("Wave: {0}", waveNumber));
+        textToChange_Mana.SetText(string.Format("Mana: {0}", Player_Currency.mana));
     }
 }

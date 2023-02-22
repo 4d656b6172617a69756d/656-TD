@@ -3,7 +3,13 @@ guid: 5eb626b160682cf42895ec6e4ff391f3
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - enemy: {fileID: 5698579319842254670, guid: 64eb99670712a04458583afbd9740da9, type: 3}
+  - enemySpawnerLocation: {instanceID: 0}
+  - textToChange_EnemyType: {instanceID: 0}
+  - textToChange_Waves: {instanceID: 0}
+  - textToChange_Money: {instanceID: 0}
+  - textToChange_Mana: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

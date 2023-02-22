@@ -10,7 +10,7 @@ public class Player_Currency : MonoBehaviour
     public int manaStart = 100;
     public int startLives = 20;
 
-    public static int money;
+    public static int money = 100;
     public static int mana;
     public static int lives;
 

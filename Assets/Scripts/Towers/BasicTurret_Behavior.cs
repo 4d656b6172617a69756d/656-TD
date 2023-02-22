@@ -4,19 +4,32 @@ using UnityEngine;
 
 public class BasicTurret_Behavior : MonoBehaviour
 {
+    // Tower components
     public GameObject ProjectileType;
     public Transform FireSpot;
+
+    // Targeting
     public Transform target;
-
     public string enemyTag = "Enemy";
-
-    public float attackSpeed = 1f;
-    public float attackCooldown = 0f;
-    public float rotationSpeed = 10f;
-    public float turnSpeed = 12f;
     public float towerRange = 15f;
 
+    // Attack properties
     public int towerDamage = 20;
+    public float baseAttackSpeed = 1f;
+    public float attackSpeed = 1f;
+    public float attackCooldown = 0f;
+    public float bonusAttackSpeed = 0.1f;
+
+    // Behaviors
+    public bool multishotEnabled = false;
+    public bool berserkEnabled = false;
+
+    // Internal state
+    private float timeSinceLastAttack = 0f;
+
+    // Rotation
+    public float rotationSpeed = 10f;
+    public float turnSpeed = 12f;
 
     private void OnDrawGizmosSelected()
     {
@@ -29,10 +42,22 @@ public class BasicTurret_Behavior : MonoBehaviour
         GameObject SpawnProjectiles = Instantiate(ProjectileType, FireSpot.position, FireSpot.rotation);
         Bullet_Interaction projectile = SpawnProjectiles.GetComponent<Bullet_Interaction>();
         projectile.damage = towerDamage;
-        
+
         if (projectile != null)
         {
             projectile.Detection(target);
+        }
+
+        if (berserkEnabled)
+        {
+            attackSpeed += bonusAttackSpeed;
+            attackSpeed = Mathf.Clamp(attackSpeed, baseAttackSpeed, baseAttackSpeed * 2f);
+            timeSinceLastAttack = 0f;
+        }
+
+        if (multishotEnabled)
+        {
+            projectile.multishotEnabled = true;
         }
     }
 
@@ -69,6 +94,12 @@ public class BasicTurret_Behavior : MonoBehaviour
     private void FixedUpdate()
     {
         attackCooldown -= Time.deltaTime;
+        timeSinceLastAttack += Time.deltaTime;
+
+        if (timeSinceLastAttack > 3f)
+        {
+            attackSpeed -= bonusAttackSpeed;
+        }
 
         if (target == null)
         {

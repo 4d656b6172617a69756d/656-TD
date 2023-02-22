@@ -1,42 +1,70 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class NodeBuilder : MonoBehaviour
 {
-    public Color startcol;
-    public Color prebuild;
-    public Vector3 offset;
-    public Vector3 size;
-    
     private GameObject turretToBuild;
     public GameObject BasicTurret;
     public GameObject RangeTurret;
 
-    private GameObject tower;
-    private Renderer map;
+    private GameObject builtTurret;
+    private Renderer nodeRenderer;
+
+    private Color startColor;
+    private Color prebuildColor;
+    private Vector3 positionOffset;
+    private Vector3 nodeSize;
+
+    private const KeyCode Alpha1KeyCode = KeyCode.Alpha1;
+    private const KeyCode Alpha2KeyCode = KeyCode.Alpha2;
+    private const KeyCode ReturnKeyCode = KeyCode.Return;
+
 
     public bool BuildMode = false;
     private void Start()
     {
-        map = GetComponent<Renderer>();
-        startcol = map.material.color;
-        size = map.bounds.size;
+        nodeRenderer = GetComponent<Renderer>();
+        startColor = nodeRenderer.material.color;
+        nodeSize = nodeRenderer.bounds.size;
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (BuildMode == false)
         {
-            turretToBuild = BasicTurret;
+            startColor = nodeRenderer.material.color;
         }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+
+        KeyCode keyPressed = KeyCode.None;
+
+        if (Input.GetKeyDown(Alpha1KeyCode))
         {
-            turretToBuild = RangeTurret;
+            keyPressed = Alpha1KeyCode;
         }
-        if (Input.GetKeyDown(KeyCode.Return))
+        else if (Input.GetKeyDown(Alpha2KeyCode))
         {
-            BuildMode = true;
+            keyPressed = Alpha2KeyCode;
+        }
+        else if (Input.GetKeyDown(ReturnKeyCode))
+        {
+            keyPressed = ReturnKeyCode;
+        }
+
+        switch (keyPressed)
+        {
+            case Alpha1KeyCode:
+                turretToBuild = BasicTurret;
+                break;
+
+            case Alpha2KeyCode:
+                turretToBuild = RangeTurret;
+                break;
+
+            case ReturnKeyCode:
+                BuildMode = !BuildMode;
+                break;
         }
     }
 
@@ -49,27 +77,32 @@ public class NodeBuilder : MonoBehaviour
     {
         if (BuildMode && turretToBuild != null)
         {
-            map.material.color = prebuild;
+            prebuildColor = nodeRenderer.material.color;
+            nodeRenderer.material.color = Color.blue;
         }
     }
 
     private void OnMouseExit()
     {
-        map.material.color = startcol;
+        if (turretToBuild != null)
+        {
+            nodeRenderer.material.color = startColor;
+        }
     }
 
     void BuildTower()
     {
         if (BuildMode && turretToBuild != null)
         {
-            if (tower != null)
+            if (builtTurret != null || Player_Currency.money < 25)
             {
                 Debug.Log("Can't build");
                 return;
             }
-            tower = Instantiate(turretToBuild, transform.position, transform.rotation);
+            Player_Currency.money -=10;
+            builtTurret = Instantiate(turretToBuild, transform.position + positionOffset, transform.rotation);
         }
-        BuildMode = false;
     }
 
 }
+

@@ -592,7 +592,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 718.0715, y: 398.9045}
+  m_AnchoredPosition: {x: 718.0715, y: 261.80893}
   m_SizeDelta: {x: 438.7318, y: 65.9571}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &225894835
@@ -2247,7 +2247,7 @@ MonoBehaviour:
   textToChange_Waves: {fileID: 225894835}
   textToChange_Money: {fileID: 653358079}
   textToChange_Mana: {fileID: 665583960}
-  waveCooldown: 5
+  waveCooldown: 2
   preparationTime: 3
   waveNumber: 1
   index: 0
@@ -2509,6 +2509,8 @@ MonoBehaviour:
   - Boss
   - Farm
   - Special
+  enemyDefinition: {fileID: 0}
+  playerCurrency: {fileID: 0}
 --- !u!1001 &755388684
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2738,7 +2740,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 718.0715, y: 474.09558}
+  m_AnchoredPosition: {x: 718.0715, y: 337}
   m_SizeDelta: {x: 438.7318, y: 65.9571}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &827131031

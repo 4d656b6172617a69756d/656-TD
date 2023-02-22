@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Enemy_Definition : MonoBehaviour, IEffectable
 {
 	public GameObject deathEffect;
+	public SpawnManager SpawnManager;
 	public StatusEffectData _data;
 	private Transform target;
 
@@ -30,14 +32,13 @@ public class Enemy_Definition : MonoBehaviour, IEffectable
 	private float currentEffectTime = 0f;
 	private float nextTickTime = 0f;
 
-	[SerializeField]
-	private Queue<string> enemyCaptured;
+	private Dictionary<string, int> capturedEnemies = new Dictionary<string, int>();
 
 	void Start()
 	{
+		
 		target = Waypoint_Logic.points[0];
 		currentHealth = maxHealth;
-		enemyCaptured = new Queue<string>(10);
 	}
 
 	void Update()
@@ -121,27 +122,33 @@ public class Enemy_Definition : MonoBehaviour, IEffectable
 		isDead = true;
 
 		GetBounty();
-		GetMana(target);
+		GetMana();
 
 		GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
 		Destroy(effect, 5f);
 		Destroy(gameObject);
 	}
 
-	void GetMana(Transform target)
-	{
-		Player_Currency.mana += enemyCaptured.Count / 4;
-		Debug.Log("Mana after death: " + Player_Currency.mana);
+	// BRB EATING
 
-		if (Random.Range(0, 100) < 20)
+	void GetMana()
+	{
+		if (capturedEnemies.Count >= 10)
 		{
-			enemyCaptured.Enqueue(target.name);			
-			if (enemyCaptured.Count > 10)
-			{
-				enemyCaptured.Dequeue();
-				Debug.Log("Dequeueing");
-			}
+			var oldestEnemy = capturedEnemies.Keys
+				.First();
+			capturedEnemies.Remove(oldestEnemy);
+			Debug.Log("<color=red>REMOVING ENEMIES</color>");
 		}
+		else if (Random.Range(0, 100) < 95)
+		{
+			capturedEnemies.Add(enemyType, Random.Range(1,20));
+			Debug.Log("<color=green>ADDING ENEMIES</color>");			
+		}
+		int totalWaves = capturedEnemies
+			.Sum(x => x.Value);
+		Player_Currency.mana += totalWaves;
+		Debug.Log("Mana after kill: " + Player_Currency.mana);
 	}
 
 
