@@ -11,23 +11,21 @@ public class NodeBuilder : MonoBehaviour
 
     private GameObject builtTurret;
     private Renderer nodeRenderer;
+    private int towerCost;
 
-    private Color startColor;
+    public Color startColor;
     private Color prebuildColor;
     private Vector3 positionOffset;
-    private Vector3 nodeSize;
 
     private const KeyCode Alpha1KeyCode = KeyCode.Alpha1;
     private const KeyCode Alpha2KeyCode = KeyCode.Alpha2;
     private const KeyCode ReturnKeyCode = KeyCode.Return;
-
 
     public bool BuildMode = false;
     private void Start()
     {
         nodeRenderer = GetComponent<Renderer>();
         startColor = nodeRenderer.material.color;
-        nodeSize = nodeRenderer.bounds.size;
     }
 
     void Update()
@@ -94,12 +92,12 @@ public class NodeBuilder : MonoBehaviour
     {
         if (BuildMode && turretToBuild != null)
         {
-            if (builtTurret != null || Player_Currency.money < 25)
+            if (builtTurret != null || Player_Currency.money < towerCost)
             {
                 Debug.Log("Can't build");
                 return;
             }
-            Player_Currency.money -=10;
+            Player_Currency.money -= 50;
             builtTurret = Instantiate(turretToBuild, transform.position + positionOffset, transform.rotation);
         }
     }

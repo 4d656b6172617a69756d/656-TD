@@ -5,111 +5,185 @@ using UnityEngine.UI;
 
 public class Player_SPAbilities : MonoBehaviour
 {
-    public float Slam_Cooldown;
-    public float slamCD;
+    public float abilitySlamCooldown = 20f;
+    public float abilitySlowCooldown = 20f;
+    public float abilityPowerUpCooldown = 20f;
+    public float abilityGoldmineCooldown = 20f;
+    public GameObject abilityGoldmineEffect;
+    private GameObject abilityGoldmineNode;
+    private Dictionary<string, float> cooldownList = new();
 
-    public float Slow_Cooldown;
-    public float slowCD;
-
-    public float PowerUp_Cooldown;
-    public float powerupCD;
-
-    public float Income_Cooldown;
-    public float incomeCD;
+    void Start()
+    {
+        cooldownList.Add("AbilitySlam", 0f);
+        cooldownList.Add("AbilitySlow", 0f);
+        cooldownList.Add("AbilityPowerUp", 0f);
+        cooldownList.Add("AbilityGoldmine", 0f);
+    }
 
     void Update()
     {
-        slamCD -= Time.deltaTime;
-        slowCD -= Time.deltaTime;
-        powerupCD -= Time.deltaTime;
-        incomeCD -= Time.deltaTime;
+        UpdateCooldown("AbilitySlam");
+        UpdateCooldown("AbilitySlow");
+        UpdateCooldown("AbilityPowerUp");
+        UpdateCooldown("AbilityGoldmine");
     }
-    public void Ability_Slam(int slamDamage) // deals damage to all enemies
+
+    void UpdateCooldown(string abilityName)
     {
-        GameObject[] AllEnemies = GameObject.FindGameObjectsWithTag("Enemy");
-        if (AllEnemies.Length == 0 || slamCD >= 0)
+        if (cooldownList[abilityName] > 0f)
+        {
+            cooldownList[abilityName] -= Time.deltaTime;
+        }
+    }
+
+    public void AbilitySlam(int slamDamage)
+    {
+        if (cooldownList["AbilitySlam"] > 0f)
+        {
+            Debug.Log("Ability Slam is on cooldown!");
+            return;
+        }
+
+        GameObject[] allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
+        if (allEnemies.Length == 0)
         {
             Debug.Log("Slam Failed!");
         }
         else
         {
-            slamCD = Slam_Cooldown;
-            Debug.Log("Ability Slam is used on " + AllEnemies.Length);
-            foreach (GameObject enemy in AllEnemies)
+            cooldownList["AbilitySlam"] = abilitySlamCooldown;
+            Debug.Log("Ability Slam is used on " + allEnemies.Length);
+            foreach (GameObject enemy in allEnemies)
             {
-                enemy.GetComponent<Enemy_Definition>().TakeDamage(slamDamage * GetComponent<Upgrade_Logic>().upgradeTier_Spells);
+                enemy.GetComponent<Enemy_Definition>().TakeDamage(slamDamage);
                 Debug.Log("Enemy Health after Slam: " + enemy.GetComponent<Enemy_Definition>().currentHealth);
             }
         }
     }
-    public void Ability_Slow(StatusEffectData _data) // slows all enemies by 50% 
-    {
-        GameObject[] AllEnemies = GameObject.FindGameObjectsWithTag("Enemy");
 
-        if (AllEnemies.Length == 0 || slowCD >= 0)
+    public void AbilitySlow(StatusEffectData data)
+    {
+        if (cooldownList["AbilitySlow"] > 0f)
+        {
+            Debug.Log("Ability Slow is on cooldown!");
+            return;
+        }
+
+        GameObject[] allEnemies = GameObject.FindGameObjectsWithTag("Enemy");
+        if (allEnemies.Length == 0)
         {
             Debug.Log("Slow Failed!");
         }
         else
         {
-            slowCD = Slow_Cooldown;
-            Debug.Log("Ability Slow was used on " + AllEnemies.Length);
+            cooldownList["AbilitySlow"] = abilitySlowCooldown;
+            Debug.Log("Ability Slow was used on " + allEnemies.Length);
 
-            foreach (GameObject enemy in AllEnemies)
+            foreach (GameObject enemy in allEnemies)
             {
-                enemy.GetComponent<IEffectable>().Debuff_Apply(_data);
+                enemy.GetComponent<IEffectable>().Debuff_Apply(data);
             }
         }
     }
-    public void Ability_Income(int incomePercent) // gives money after some time
-    {
-        StartCoroutine(IncomeManager(incomePercent));
-    }
 
-    IEnumerator IncomeManager(int value)
+    public void AbilityPowerUp(float powerupDuration)
     {
-        if (incomeCD >= 0 || Player_Currency.money < 50)
+        if (cooldownList["AbilityPowerUp"] > 0f)
         {
-            Debug.Log("Income Failed!");
+            Debug.Log("Powerup on cooldown!");
+            return;
         }
-        else
+
+        GameObject[] AllTowers = GameObject.FindGameObjectsWithTag("Tower");
+        if (AllTowers.Length == 0)
         {
-            Player_Currency.money -= 50;
-            incomeCD = Income_Cooldown;
-
-            yield return new WaitForSeconds(5);
-            Player_Currency.money += ((Player_Currency.money * value) / 100) + 25;
-            Debug.Log("Income received, total money: " + Player_Currency.money);
+            Debug.Log("No towers to power up!");
+            return;
         }
-    }
 
-    public void Ability_PowerUp(float powerupDuration) // adds damage to all towers for 10 seconds
-    {
+        cooldownList["AbilityPowerUp"] = abilityPowerUpCooldown;
+
+        foreach (GameObject tower in AllTowers)
+        {
+            var allTowers = tower.GetComponent<BasicTurret_Behavior>();
+            allTowers.towerDamage += 50;
+       }
+
         StartCoroutine(PowerUpManager(powerupDuration));
     }
 
     IEnumerator PowerUpManager(float duration)
     {
+        yield return new WaitForSeconds(duration);
+
         GameObject[] AllTowers = GameObject.FindGameObjectsWithTag("Tower");
-        if (AllTowers.Length == 0)
+        foreach (GameObject tower in AllTowers)
         {
-            Debug.Log("Powerup Failed!");
+            var allTowers = tower.GetComponent<BasicTurret_Behavior>();
+            allTowers.towerDamage -= 50;
+        }
+
+        Debug.Log("Powerup expired!");
+    }
+
+    public void AbilityGoldmine(float duration)
+    {
+        if (cooldownList["AbilityGoldmine"] > 0f)
+        {
+            Debug.Log("Ability Goldmine is on cooldown!");
+            return;
         }
         else
         {
-            powerupCD = PowerUp_Cooldown;
+            abilityGoldmineEffect.SetActive(true);
+            StartCoroutine("GoldMineTest", duration);
+        }
+    }
 
-            foreach (GameObject tower in AllTowers)
-            {
-                tower.GetComponent<BasicTurret_Behavior>().towerDamage += 50;
-                Debug.Log("Powerup active, tower damage increased to: " + tower.GetComponent<BasicTurret_Behavior>().towerDamage);
-            }
+    IEnumerator GoldMineTest(float duration)
+    {
+        while (!Input.GetMouseButtonDown(0))
+        {
+            yield return null;
+        }
+        cooldownList["AbilityGoldmine"] = abilityGoldmineCooldown;
 
-            yield return new WaitForSeconds(duration);
-            foreach (GameObject tower in AllTowers)
+        GameObject closestTower = null;
+        GameObject[] AllTowers = GameObject.FindGameObjectsWithTag("Tower");
+        float closestDistance = Mathf.Infinity;
+        abilityGoldmineEffect.SetActive(false);
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        foreach (GameObject tower in AllTowers)
+        {
+            float distance = Vector3.Distance(tower.transform.position, mousePos);
+            if (distance < closestDistance)
             {
-                tower.GetComponent<BasicTurret_Behavior>().towerDamage -= 50;
+                closestTower = tower;
+                closestDistance = distance;
             }
         }
+
+        if (closestTower != null)
+        {
+            RaycastHit[] nodeSearch = Physics.RaycastAll(closestTower.transform.position, Vector3.down);
+            foreach (RaycastHit hit in nodeSearch)
+            {
+                if (hit.collider.CompareTag("goldTargetNode"))
+                {
+                    abilityGoldmineNode = hit.collider.gameObject;
+                    abilityGoldmineNode.GetComponent<Renderer>().material.color = Color.cyan;
+                }
+            }
+            LeanTween.scale(closestTower, new Vector3(150f, 150f, 150f), 1);
+            closestTower.GetComponent<BasicTurret_Behavior>().towerDamage += 100;
+        }
+
+        yield return new WaitForSeconds(duration);
+
+        LeanTween.scale(closestTower, new Vector3(100f, 100f, 100f), 1);
+        closestTower.GetComponent<BasicTurret_Behavior>().towerDamage -= 100;
+        abilityGoldmineNode.GetComponent<Renderer>().material.color = new Color32(170, 209, 163, 255);
     }
 }

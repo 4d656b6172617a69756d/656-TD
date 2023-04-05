@@ -23,9 +23,9 @@ public class Enemy_Definition : MonoBehaviour, IEffectable
 	public int massBounty = 5;
 	public int farmBounty = 100;
 	public string enemyType;
-	private int totalBounty;
+	public int totalBounty;
 
-	private bool isDead = false;
+	public bool isDead = false;
 	private int wavepoint = 0;
     
 	private float moveSpeed = 20f;
@@ -61,7 +61,6 @@ public class Enemy_Definition : MonoBehaviour, IEffectable
 		}
 	}
 
-	// Debuffs start
 	public void Debuff_End()
 	{
 		_data = null;
@@ -105,7 +104,6 @@ public class Enemy_Definition : MonoBehaviour, IEffectable
 			currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 		}
 	}
-	// Debuffs end
 
 	public void TakeDamage(int amount)
 	{
@@ -125,11 +123,9 @@ public class Enemy_Definition : MonoBehaviour, IEffectable
 		GetMana();
 
 		GameObject effect = Instantiate(deathEffect, transform.position, Quaternion.identity);
-		Destroy(effect, 5f);
+		Destroy(effect, 3f);
 		Destroy(gameObject);
 	}
-
-	// BRB EATING
 
 	void GetMana()
 	{
@@ -140,7 +136,7 @@ public class Enemy_Definition : MonoBehaviour, IEffectable
 			capturedEnemies.Remove(oldestEnemy);
 			Debug.Log("<color=red>REMOVING ENEMIES</color>");
 		}
-		else if (Random.Range(0, 100) < 95)
+		else if (Random.Range(0, 100) < 20)
 		{
 			capturedEnemies.Add(enemyType, Random.Range(1,20));
 			Debug.Log("<color=green>ADDING ENEMIES</color>");			
@@ -150,7 +146,6 @@ public class Enemy_Definition : MonoBehaviour, IEffectable
 		Player_Currency.mana += totalWaves;
 		Debug.Log("Mana after kill: " + Player_Currency.mana);
 	}
-
 
 	void GetBounty()
     {

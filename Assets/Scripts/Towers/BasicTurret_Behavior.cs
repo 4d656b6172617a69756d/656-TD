@@ -4,30 +4,25 @@ using UnityEngine;
 
 public class BasicTurret_Behavior : MonoBehaviour
 {
-    // Tower components
     public GameObject ProjectileType;
     public Transform FireSpot;
-
-    // Targeting
     public Transform target;
     public string enemyTag = "Enemy";
-    public float towerRange = 15f;
 
-    // Attack properties
     public int towerDamage = 20;
-    public float baseAttackSpeed = 1f;
+    public float baseAttackSpeed;
     public float attackSpeed = 1f;
     public float attackCooldown = 0f;
     public float bonusAttackSpeed = 0.1f;
-
-    // Behaviors
-    public bool multishotEnabled = false;
-    public bool berserkEnabled = false;
-
-    // Internal state
+    private int towerCost = 15;
     private float timeSinceLastAttack = 0f;
+    public float towerRange = 15f;
 
-    // Rotation
+    public bool abilityMultishotEnabled = false;
+    public bool abilityBerserkEnabled = false;
+    public bool abilityGoldmineEnabled = false;
+    public bool abilityManaSpawnEnabled = false;
+
     public float rotationSpeed = 10f;
     public float turnSpeed = 12f;
 
@@ -37,33 +32,58 @@ public class BasicTurret_Behavior : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, towerRange);
     }
 
+    void Start()
+    {
+        InvokeRepeating("UpdateTarget", 0f, 0.5f);
+        baseAttackSpeed = attackSpeed;
+    }
+
+    public int GetTowerCost()
+    {
+        return towerCost;
+    }
+
     void Tower_Attack()
     {
         GameObject SpawnProjectiles = Instantiate(ProjectileType, FireSpot.position, FireSpot.rotation);
         Bullet_Interaction projectile = SpawnProjectiles.GetComponent<Bullet_Interaction>();
-        projectile.damage = towerDamage;
 
-        if (projectile != null)
+        if (abilityMultishotEnabled)
         {
-            projectile.Detection(target);
+            projectile.abilityMultishotEnabled = true;
         }
 
-        if (berserkEnabled)
+        if (abilityManaSpawnEnabled)
+        {
+            projectile.abilityManaSpawnEnabled = true;
+        }
+
+        if (abilityBerserkEnabled)
         {
             attackSpeed += bonusAttackSpeed;
             attackSpeed = Mathf.Clamp(attackSpeed, baseAttackSpeed, baseAttackSpeed * 2f);
             timeSinceLastAttack = 0f;
         }
 
-        if (multishotEnabled)
+        if (abilityGoldmineEnabled)
         {
-            projectile.multishotEnabled = true;
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, towerRange);
+            foreach (Collider hitCollider in hitColliders)
+            {
+                Enemy_Definition enemy = hitCollider.gameObject.GetComponent<Enemy_Definition>();
+                if (enemy.isDead)
+                {
+                    enemy.totalBounty = Mathf.RoundToInt(enemy.totalBounty * 1.2f);
+                }
+            }
         }
-    }
 
-    void Start()
-    {
-        InvokeRepeating("UpdateTarget", 0f, 0.5f);
+        if (projectile != null)
+        {
+            projectile.Detection(target);
+        }
+
+        projectile.damage = towerDamage;
     }
 
     void UpdateTarget()
@@ -96,7 +116,7 @@ public class BasicTurret_Behavior : MonoBehaviour
         attackCooldown -= Time.deltaTime;
         timeSinceLastAttack += Time.deltaTime;
 
-        if (timeSinceLastAttack > 3f)
+        if (timeSinceLastAttack > 3f && attackSpeed > baseAttackSpeed)
         {
             attackSpeed -= bonusAttackSpeed;
         }

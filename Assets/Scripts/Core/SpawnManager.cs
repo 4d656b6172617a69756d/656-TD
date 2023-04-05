@@ -68,7 +68,7 @@ public class SpawnManager : MonoBehaviour
         if (waveInfo.TryGetValue(wavesSelected[waveNumber], out var info))
         {
             enemiesToSpawn = info.enemiesToSpawn;
-            enemyDefinition.maxHealth += 5 * Mathf.Log(1 + info.maxHealthBoost * waveNumber); // 150
+            enemyDefinition.maxHealth += 5 * Mathf.Log(1 + info.maxHealthBoost * waveNumber); 
         }
     }
 

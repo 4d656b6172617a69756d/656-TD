@@ -1,52 +1,92 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
 public class Upgrade_Logic : MonoBehaviour
 {
-    public int upgradeTier_Spells = 1;
-    public int upgradeTier_Towers = 1;
-    public int upgradePrice = 100;
-    public float upgradeTime = 20;
-    public bool isUpgrading;
+    public GameObject upgradeButton;
+    public int damageBonus = 10;
+    public int attackSpeedBonus = 10;
+    public int upgradeCost_Money;
+    public int upgradeCost_Mana;
+    public int upgradeLevel = 1;
+    public int abilitiesIndex = 0;
+    public int towerCost;
+    public int upgradeCost;
 
-    public void UpgradeSpells()
+    public List<GameObject> abilitiesList;
+
+    private TextMeshProUGUI upgradeButtonText;
+
+
+    private void Start()
     {
-        if (!isUpgrading)
+        foreach (GameObject ability in abilitiesList)
         {
-            isUpgrading = true;
-            Player_Currency.money -= upgradePrice;
-
-            while (upgradeTime < 0)
+            if (ability != null)
             {
-                upgradeTime -= Time.deltaTime;
+                ability.SetActive(false);
             }
-            upgradeTier_Spells++;
-            upgradeTime = 20;
-            upgradePrice *= 2;
-            isUpgrading = false;
-            
+            else
+            {
+                Debug.LogWarning("Unable to find ability with name " + ability);
+            }
         }
-        else Debug.Log("Something went wrong!");
-        
+
+        upgradeButtonText = GameObject.Find("UpgradeText").GetComponent<TextMeshProUGUI>();
+        upgradeCost_Money = Random.Range(200, 500);
+        upgradeCost_Mana = Random.Range(50, 100);
     }
 
-    public void UpgradeTowers()
+    void Awake()
     {
-        if (!isUpgrading)
-        {
-            isUpgrading = true;
-            Player_Currency.money -= upgradePrice;
+        upgradeButton.GetComponent<Button>().onClick.AddListener(() => OnUpgradeButtonClicked());
+    }
 
-            while (upgradeTime < 0)
-            {
-                upgradeTime -= Time.deltaTime;
-            }
-            upgradeTier_Towers++;
-            upgradeTime = 20;
-            upgradePrice *= 2;
-            isUpgrading = false;
+    private void Update()
+    {
+        upgradeButtonText.SetText("Upgrade\n ($" + GetUpgradeCost() + "g + " + upgradeCost_Mana + " m)");
+    }
+
+    public void OnUpgradeButtonClicked()
+    {
+        upgradeCost = upgradeCost_Money + ((upgradeLevel + 1) * Random.Range(3, 10));
+
+        if (Player_Currency.money >= upgradeCost && Player_Currency.mana >= upgradeCost_Mana)
+        {
+            Player_Currency.money -= upgradeCost;
+            Player_Currency.mana -= upgradeCost_Mana;
+            UpgradeTowers();
         }
-        else Debug.Log("Something went wrong!");
+    }
+
+    private int GetUpgradeCost()
+    {
+        return upgradeCost_Money + ((upgradeLevel + 1) * 10);
+    }
+
+    private void UpgradeTowers()
+    {
+        upgradeLevel++;
+        foreach (GameObject tower in GameObject.FindGameObjectsWithTag("Tower"))
+        {
+            BasicTurret_Behavior towers = tower.GetComponent<BasicTurret_Behavior>();
+            towers.towerDamage += Mathf.RoundToInt(towers.towerDamage * (damageBonus / 100f + (2 * upgradeLevel / 100f)));
+            if (upgradeLevel % 3 == 0)
+            {
+                towers.attackSpeed += Mathf.RoundToInt(towers.attackSpeed * (attackSpeedBonus / 100f));
+            }
+        }
+
+        if (abilitiesList.Count > 0)
+        {
+            int unlockIndex = Random.Range(0, abilitiesList.Count - 1);
+            GameObject ability = abilitiesList[unlockIndex];
+            abilitiesList.RemoveAt(unlockIndex);
+            ability.SetActive(true);
+        }
+        else Debug.Log("No Abilities to learn!");
     }
 }

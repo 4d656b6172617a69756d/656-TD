@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class Camera_Behavior : MonoBehaviour
 {
-
     private bool doMovment = true;
 
 
@@ -54,7 +53,6 @@ public class Camera_Behavior : MonoBehaviour
             return;
 
         transform.Translate(scroll * scrollSpeed * Time.deltaTime * Vector3.forward);
-
     }
 }
 

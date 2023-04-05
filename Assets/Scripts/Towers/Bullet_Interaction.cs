@@ -9,11 +9,15 @@ public class Bullet_Interaction : MonoBehaviour
     public float speed = 70f;
     public int damage;
 
-    public bool multishotEnabled = false;
-    public bool berserkEnabled = false;
+    public bool abilityMultishotEnabled = false;
+    public bool abilityBerserkEnabled = false;
+    public bool abilityGoldmineEnabled = false;
+    public bool abilityManaSpawnEnabled = false;
 
     public float multishotRadius = 3f;
     public float multishotDamagePercent = 0.33f;
+    
+    public float bulletEffectTime = 1f;
 
     [SerializeField] 
     private StatusEffectData _data;
@@ -26,9 +30,9 @@ public class Bullet_Interaction : MonoBehaviour
     void BulletHit()
     {
         GameObject onHitEffect = Instantiate(onHit_Blood, transform.position, transform.rotation);
-        Destroy(onHitEffect, 1f);
+        Destroy(onHitEffect, bulletEffectTime);
         DealDamage(target);
-        if (multishotEnabled)
+        if (abilityMultishotEnabled)
         {
             ApplyMultishot();
         }
@@ -71,9 +75,6 @@ public class Bullet_Interaction : MonoBehaviour
             }
         }
     }
-
-
-
     void Update()
     {
         if (target == null)
